@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: demo project to test the swaggers.
+  version: '5.0.0'
+  servers:
+    - url : http://localhost:2020
+    - url : https://localhost:2020
+  schemes : 
+    - http
+    
+  
+paths:
+  /user/registration:
+    post:
+      description: This api is used to register new users
+      
+      content: 
+        application/json
+      parameters :
+        - in : body
+          name : user
+          required : true
+          schema:
+            type: object
+            properties:
+              roles: 
+                type : string 
+              name :
+                type : string
+              deviceId :
+                type : string
+              email :
+                type : string
+                format: email
+              password :
+                type : string
+              phoneNumber:
+                type : string
+      responses:
+        '200':    # status code
+          description: Sucessfully registered
+          '400':
+          description : registration failed
+  
+
+
+
+
+  /user/login:
+    post:
+      summary: 
+      description: This api is used to login
+      requestBody:
+        required: true
+      
+      produces: 
+        - application/json
+      consumes:
+        - application/json
+      parameters : 
+        - in : body
+          name : loginDetails
+          schema : 
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type : string
+
+    
+      responses:
+        '200':    # status code
+          description: Sucessfully logged in
+        '400':
+          description : Error in user entry
+  
+
+  /user/edit:
+    post:
+      summary: 
+      description: This api is used to edit
+      produces: 
+        - application/json
+      consumes:
+        - application/json
+      parameters : 
+        - in : body
+          name : editingDetails
+          schema : 
+            type: object
+            properties:
+              editor:
+                type: string
+              userId:
+                type : string
+              name:
+                type : string
+              email:
+                type: string
+                format: email
+              password :
+                type: string
+      
+          
+      responses : 
+        '200' : 
+          description : Sucessfully edited
+        '400' :
+          description : Error
+  

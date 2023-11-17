@@ -1,5 +1,6 @@
 const { tokenGeneration, passwordHash,compare } = require('../service/jwtToken')
 const jwt = require("jsonwebtoken");
+const bcrypt =require('bcrypt')
 const {validateEmail, validatePassword, validatePhoneNumber} = require("../service/validate")
 const pool = require("../config/connect");
 
@@ -44,11 +45,13 @@ const login = (req, res) => {
     const { email, password } = req.body;
     if (email && password) {
         pool.query(`select * from user where email= '${email}'`, (err, result) => {
+            console.log(result, "result ")
             if (result[0].length !== 0) {
                 let comparePassword = compare(password,result[0].password)
                 if (comparePassword) {
                     token = tokenGeneration(result[0].id, result[0].deviceId);
                     sessionTable(result[0].id, token, result[0].deviceId, res)
+                    console.log('token')
                 } else {
                     return res.status(400).send({ error: "Incorrect Password" })
                 }
@@ -56,6 +59,9 @@ const login = (req, res) => {
             else
                 return res.status(400).send({ error: "This email don't have any account, Please register before you login" })
         })
+    }
+    else{
+        return res.status(400).send({Message :" Enter email and password"})
     }
 }
 
@@ -89,7 +95,7 @@ const logout = (req, res) => {
     }
     else {
         res.status(400).send({ Message: "Invalid Token" })
-    }
+    } 
 
 }
 
@@ -137,6 +143,7 @@ const edit = (req, res) => {
     }
 
 }
+
 
 module.exports = {
     registration,

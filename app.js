@@ -1,6 +1,9 @@
 const express = require("express");
+const middleware = require('swagger-express-middleware');
 const swaggerUi = require('swagger-ui-express');
-const swaggerJSDoc= require('swagger-jsdoc')
+
+const YAML = require ("yamljs")
+const doc = YAML.load("./src/doc.yaml")
 
 
 const app = express();
@@ -9,29 +12,29 @@ const port = 2020;
 
 
 const userRoute = require("./src/routes/user");
-const swagger = require('./src/swagger/doc')
 
-const options = {
-    definition: {
-      info: {
-        openapi: '3.0.0',
-        title: 'My API',
-        version: '2.0',
-        description: 'API documentation using Swagger',
-      },
-      servers: [
-        {
-            url:  "http://localhost:2020/"
-        }
-      ]
-    },
-    apis: ['.']
-}
 
-const swaggerspec = swaggerJSDoc(options)
+// middleware(doc, app, (err, middleware) => {
+//   // app.use(
+//   //   middleware.files(app, {
+//   //     apiPath: '/swagger',
+//   //   })
+//   // );
+//   app.use(
+//     middleware.metadata()
+//   );
+//   app.use(
+//     middleware.CORS(),
+//     middleware.validateRequest()
+//   );
+
+
 app.use('/user',userRoute);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerspec,swagger));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(doc));
+
 
 app.listen(port, () => {
     console.log(`Listing in ${port}`);
-});
+
+})
+
